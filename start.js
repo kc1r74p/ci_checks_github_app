@@ -3,11 +3,13 @@ var fs = require('fs');
 var createHandler = require('github-webhook-handler');
 var createApp = require('github-app');
 
+//todo: cleanup
 var handler = createHandler({
   path: '/',
   secret: 'somerandom' || process.env.WEBHOOK_SECRET || 'development'
 });
 
+//todo: cleanup
 http.createServer(function (req, res) {
   handler(req, res, function (err) {
     res.statusCode = 404;
@@ -15,8 +17,8 @@ http.createServer(function (req, res) {
   });
 }).listen(5000 || process.env.PORT, function(){console.log("Github App - Server running...");});
 
-
 var app = createApp({
+  //todo: cleanup
   id: 24771 || process.env.APP_ID ,
   cert: process.env.PRIVATE_KEY || fs.readFileSync('private-key.pem')
 });
@@ -25,6 +27,7 @@ handler.on('error', function (err) {
   console.error('Error:', err.message)
 });
 
+//todo: cleanup
 handler.on('installation', function (event) {
   if (event.payload.action == 'created') {
     console.log("App installed"); //, event.payload.installation);
@@ -33,6 +36,7 @@ handler.on('installation', function (event) {
   }
 });
 
+//testing
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -53,6 +57,7 @@ handler.on('check_suite', function (event) {
   }
 });
 
+//todo: cleanup
 function handleCheckEvent(event){
   var check_suite = event.payload.check_suite;
   var check_name = 'Concourse Ci Build';
@@ -87,6 +92,21 @@ function handleCheckEvent(event){
       },
       actions: []
     }).then(async function(ret){
+
+      //todo: here we want to trigger the real build
+      //best way -> fly as npm package to talk to concourse directly...
+      //maybe for PoC just get most important fly --verbose REST calls and set up hacky ...
+      
+      //depending on the check above which we want to run here, or multiple checks
+      //# build concourse pipe for each check type: build, tests, lint, ...
+      //1. choose todo: group in pipe or whole pipe for each PR/commit
+      //2. how to build pipe yml with correct check scripts 
+      //3. fly
+      //4. trigger run + update github check status
+      //5. monitor run
+      //6. if done update github check like below with conclusion ...
+
+      //testing
       await sleep(30000);
       return ret;
     }).then(function(ret){
