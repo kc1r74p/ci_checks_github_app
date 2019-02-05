@@ -100,6 +100,7 @@ function handleCheckEvent(event){
       //depending on the check above which we want to run here, or multiple checks
       //# build concourse pipe for each check type: build, tests, lint, ...
       //1. choose todo: group in pipe or whole pipe for each PR/commit
+      //   - what about concurrent runs, multiple DB states, take into consideration ...
       //2. how to build pipe yml with correct check scripts 
       //3. fly
       //4. trigger run + update github check status
