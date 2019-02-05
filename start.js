@@ -114,7 +114,7 @@ function handleCheckEvent(event){
 
       var check_suite_returned = ret.data.check_suite;
 
-      //get check runs, aka the one we jsut created above
+      //get check runs, aka the one we just created above
       github.checks.listForSuite({
         owner: check_suite.head_commit.author.name,
         repo: pr.repo.name,
@@ -123,18 +123,13 @@ function handleCheckEvent(event){
         name: check_name,
         status: 'in_progress'
       }).then(function(arr){
-        
-        //console.log("arr", arr);
         arr.data.check_runs.forEach(function (item) {
-          //each run
-          //console.log("run", item);
-
           //done for id
           github.checks.update({
             owner: check_suite.head_commit.author.name,
             repo: pr.repo.name,
             check_run_id: item.id,
-            name: 'Concourse Ci Build',
+            name: check_name,
             head_sha: pr.sha,
             conclusion: 'success',
             status: 'completed',
@@ -146,16 +141,15 @@ function handleCheckEvent(event){
             },
             actions: []
           }).then(function(ret){          
-            console.log("Completed in progress check run");
+            console.log("Completed in progress check run [" + item.id + "]");
           });
         });
       });
-
-      
     });
   });
 }
 
+//todo: refactor duplicate code
 function handlePREvent(event){
   var pr = event.payload.pull_request;
   var installation = event.payload.installation.id;
@@ -186,7 +180,7 @@ function handlePREvent(event){
 
       var check_suite_returned = ret.data.check_suite;
 
-      //get check runs, aka the one we jsut created above
+      //get check runs, aka the one we jut created above
       github.checks.listForSuite({
         owner: pr.head.user.login,
         repo: pr.head.repo.name,
@@ -195,20 +189,13 @@ function handlePREvent(event){
         name: check_name,
         status: 'in_progress'
       }).then(function(arr){
-        
-        //console.log("arr", arr);
-
-        //loop
         arr.data.check_runs.forEach(function (item) {
-          //each run
-          //console.log("run", item);
-
           //done for id
           github.checks.update({
             owner: pr.head.user.login,
             repo: pr.head.repo.name,
             check_run_id: item.id,
-            name: 'Concourse Ci Build',
+            name: check_name,
             head_sha: pr.head.sha,
             conclusion: 'success',
             status: 'completed',
@@ -220,7 +207,7 @@ function handlePREvent(event){
             },
             actions: []
           }).then(function(ret){          
-            console.log("Completed in progress check run");
+            console.log("Completed in progress check run [" + item.id + "]");
           });
         });
       });
